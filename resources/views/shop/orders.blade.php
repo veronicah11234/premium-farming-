@@ -1,30 +1,48 @@
-@extends('layouts.shop')
-
-@section('title', 'Orders')
+@extends('shop.layout')
 
 @section('content')
-<h1 class="text-2xl font-bold mb-4">Orders</h1>
+<div class="container mt-4">
 
-<table class="min-w-full bg-white rounded shadow">
-    <thead class="bg-green-100">
-        <tr>
-            <th class="py-2 px-4">Order ID</th>
-            <th class="py-2 px-4">Customer</th>
-            <th class="py-2 px-4">Total</th>
-            <th class="py-2 px-4">Status</th>
-            <th class="py-2 px-4">Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($orders as $order)
-        <tr class="border-t">
-            <td class="py-2 px-4">{{ $order->id }}</td>
-            <td class="py-2 px-4">{{ $order->customer->name ?? 'N/A' }}</td>
-            <td class="py-2 px-4">Ksh {{ $order->total }}</td>
-            <td class="py-2 px-4">{{ $order->status ?? 'Pending' }}</td>
-            <td class="py-2 px-4">{{ $order->created_at->format('d-M-Y') }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    <h2 class="mb-3">Orders</h2>
+
+    {{-- If $orders is empty --}}
+    @if($orders->isEmpty())
+        <div class="alert alert-info">
+            No orders available.
+        </div>
+    @else
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @foreach($orders as $order)
+                <tr>
+                    <td>{{ $order->order_number ?? 'N/A' }}</td>
+                    <td>
+                        @if($order->customer)
+                            {{ $order->customer->name ?? 'Unknown' }}
+                        @else
+                            No customer
+                        @endif
+                    </td>
+
+                    <td>KES {{ number_format($order->total, 2) }}</td>
+                    <td>{{ ucfirst($order->status) }}</td>
+                    <td>{{ $order->created_at->format('d M Y') }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+
+    @endif
+</div>
 @endsection

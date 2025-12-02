@@ -37,7 +37,7 @@
       </div>
 
       <!-- Middle: search -->
-      <div class="flex-1 px-4">
+      {{-- <div class="flex-1 px-4">
         <div class="max-w-xl mx-auto">
           <form action="{{ url()->current() }}" method="GET" class="relative">
             <input name="q" type="search" placeholder="Search products, orders, customers..." 
@@ -47,7 +47,7 @@
             </button>
           </form>
         </div>
-      </div>
+      </div> --}}
 
       <!-- Right: controls -->
       <div class="flex items-center gap-3">
@@ -119,7 +119,7 @@
   <aside id="sidebar" class="sidebar-expanded fixed top-16 left-0 bottom-0 bg-white border-r overflow-y-auto transition-width" aria-label="Sidebar">
     <!-- Logo area -->
     <div class="p-6 border-b text-center">
-      <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="mx-auto object-contain h-20" />
+      {{-- <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="mx-auto object-contain h-20" /> --}}
       <h2 class="font-extrabold text-lg mt-3 text-green-700">Premium Farming Feeds</h2>
       <p class="text-xs text-gray-500 italic">Quality • Nutrition • Growth</p>
 

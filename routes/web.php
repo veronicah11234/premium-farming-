@@ -1,84 +1,184 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SalesReportController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\InController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\CreditNoteController;
+use App\Http\Controllers\PettyCashController;
+use App\Http\Controllers\PosReturnController;
 
-// Home
+
+/*
+|--------------------------------------------------------------------------
+| HOME & DASHBOARD
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard
 Route::get('/dashboard', [POSController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Profile routes
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
+
+Route::get('/logout', function () {
+    Auth::logout();
+    return redirect('/');
+});
+
+
 
 /*
 |--------------------------------------------------------------------------
-| POS Routes
+| POS ROUTES
 |--------------------------------------------------------------------------
 */
-Route::prefix('pos')->name('pos.')->group(function() {
-    Route::get('/', [POSController::class,'index'])->name('index');
-    Route::post('/', [POSController::class, 'store'])->name('store');
 
-    Route::get('/sell', [POSController::class,'sell'])->name('sell');
-    Route::get('/categories', [POSController::class,'categories'])->name('categories');
-    Route::get('/items', [POSController::class,'items'])->name('items');
-    Route::get('/stores', [POSController::class,'stores'])->name('stores');
-    Route::get('/update-prices', [POSController::class,'updatePrices'])->name('update-prices');
+Route::prefix('pos')->name('pos.')->group(function () {
 
-    Route::get('/goods-received', [POSController::class,'goodsReceived'])->name('goods-received');
-    Route::get('/returns', [POSController::class,'returns'])->name('returns');
-    Route::get('/issues', [POSController::class,'issues'])->name('issues');
-    Route::get('/stock-take', [POSController::class,'stockTake'])->name('stock-take');
+    // Dashboard
+    Route::get('/', [POSController::class, 'index'])->name('index');
 
-    Route::get('/best-seller', [POSController::class,'bestSeller'])->name('best-seller');
-    Route::get('/goods-received-report', [POSController::class,'goodsReceivedReport'])->name('goods-received-report');
-    Route::get('/issued-stock', [POSController::class,'issuedStock'])->name('issued-stock');
-    Route::get('/stock-level', [POSController::class,'stockLevel'])->name('stock-level');
+    // Sell
+    Route::get('/sell', [POSController::class, 'sell'])->name('sell');
+    Route::post('/sell', [POSController::class, 'storeSale'])->name('sell.store');
 
-    Route::get('/clients', [POSController::class,'clients'])->name('clients');
-    Route::get('/client-terms', [POSController::class,'clientTerms'])->name('client-terms');
-    Route::get('/transactions', [POSController::class,'transactions'])->name('transactions');
+    // Categories
+    Route::get('/categories', [StockController::class, 'categories'])->name('categories');
+
+    // Items
+    Route::get('/items', [ItemController::class, 'index'])->name('items');
+    Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
+
+    // Stores
+    Route::get('/stores', [StockController::class, 'stores'])->name('stores');
+
+    // Update prices
+    Route::get('/update-prices', [StockController::class, 'updatePrices'])->name('update-prices');
+
+    // Goods received
+    Route::get('/goods-received', [TransactionController::class, 'goodsReceived'])->name('goods-received');
+    Route::post('/goods-received/store', [TransactionController::class, 'storeGoodsReceived'])->name('goods-received.store');
+
+    // Transfers
+    Route::get('/transfers', [TransactionController::class, 'transfers'])->name('transfers');
+    Route::post('/transfers/store', [TransactionController::class, 'storeTransfer'])->name('transfers.store');
+
+    // Stock take
+    Route::get('/stock-take', [TransactionController::class, 'stockTake'])->name('stock-take');
+    Route::post('/stock-take/store', [TransactionController::class, 'storeStockTake'])->name('stock-take.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | POS Reports
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/reports/best-seller', [ReportController::class, 'bestSeller'])->name('reports.best-seller');
+    Route::get('/reports/goods-received', [ReportController::class, 'goodsReceivedReport'])->name('reports.goods-received');
+    Route::get('/reports/stock-level', [ReportController::class, 'stockLevel'])->name('reports.stock-level');
+
+    /*
+    |--------------------------------------------------------------------------
+    | POS Accounts (Clients, Invoices, Receipts etc)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/clients', [AccountController::class, 'clients'])->name('clients');
+    Route::get('/client-terms', [AccountController::class, 'clientTerms'])->name('client-terms');
+
+    Route::get('/invoices', [AccountController::class, 'invoices'])->name('invoices');
+    Route::get('/receipts', [AccountController::class, 'receipts'])->name('receipts');
+    Route::get('/credit-notes', [AccountController::class, 'creditNotes'])->name('credit-notes');
+    Route::get('/petty-cash', [AccountController::class, 'pettyCash'])->name('petty-cash');
 });
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Online Shop Routes
+| SHOP ROUTES (Front-End Online Shop)
 |--------------------------------------------------------------------------
 */
+
 Route::prefix('shop')->name('shop.')->group(function () {
 
-    // Specific pages first
     Route::get('/', [ShopController::class, 'index'])->name('index');
     Route::get('/products', [ShopController::class, 'products'])->name('products');
-    Route::get('/products/create', [ShopController::class, 'create'])->name('products.create');
-    Route::post('/products/create', [ShopController::class, 'store'])->name('products.store');
-    Route::get('/products/edit/{id}', [ShopController::class, 'edit'])->name('products.edit');
-    Route::put('/products/edit/{id}', [ShopController::class, 'update'])->name('products.update');
-    Route::delete('/products/delete/{id}', [ShopController::class, 'delete'])->name('products.delete');
-
-    Route::get('/order', [ShopController::class, 'order'])->name('orders');
-    Route::get('/customer', [ShopController::class, 'customer'])->name('customers');
-    Route::get('/report', [ShopController::class, 'report'])->name('reports');
-
-    // Dynamic product route **at the bottom**
-    Route::get('/{product}', [ShopController::class, 'show'])->name('show');
+    Route::get('/orders', [ShopController::class, 'orders'])->name('orders');
+    Route::get('/customers', [ShopController::class, 'customers'])->name('customers');
+    Route::view('/reports', 'shop.reports')->name('reports');
+    Route::get('/product/{id}', [ShopController::class, 'show'])->name('shop.show');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/pos/sell', [POSController::class, 'sell'])->name('pos.sell');
-    Route::post('/pos/sell', [POSController::class, 'storeSale'])->name('pos.storeSale');
 
-});
+
+/*
+|--------------------------------------------------------------------------
+| OTHER SYSTEM ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/receive-stock', [StockController::class, 'receiveStock'])->name('receive.stock');
+Route::post('/receive-stock', [StockController::class, 'receiveStock']);
+
+Route::post('/sell', [StockController::class, 'sell'])->name('sell.product');
+
+Route::get('/sales/report', [SalesReportController::class, 'index'])->name('sales.report');
+Route::get('/sales/report/pdf', [SalesReportController::class, 'pdf'])->name('sales.pdf');
+
+Route::get('/reports/sales', [SalesReportController::class, 'index'])->name('reports.sales');
+
+Route::get('/my-profile', function () {
+    return view('profile-page');
+})->name('my.profile');
+
+
+
+/*
+|--------------------------------------------------------------------------
+| RESOURCES (Invoices, Receipts, Credit Notes, Petty Cash)
+|--------------------------------------------------------------------------
+*/
+
+Route::resource('invoices', InvoiceController::class);
+Route::resource('receipts', ReceiptController::class);
+Route::resource('credit-notes', CreditNoteController::class);
+Route::resource('petty-cash', PettyCashController::class);
+
+// POS Returns
+Route::resource('pos-returns', PosReturnController::class);
+
+
+
 require __DIR__.'/auth.php';

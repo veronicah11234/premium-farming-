@@ -1,21 +1,75 @@
-@extends('layouts.shop')
+<!-- Product Page with Bootstrap -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
-@section('title', 'Manage Products')
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Premium Feeds</a>
+  </div>
+</nav>
 
-@section('content')
-<h1 class="text-2xl font-bold mb-4">Manage Products</h1>
+<div class="container">
+    <h2 class="mb-4 text-center">Our Products</h2>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    @foreach($products as $product)
-        <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
-            <img src="{{ $product->image ?? asset('images/default.jpg') }}" class="h-40 w-full object-cover rounded">
-            <h3 class="font-bold text-lg mt-2">{{ $product->name }}</h3>
-            <p class="text-gray-600 mt-1">{{ Str::limit($product->description, 100) }}</p>
-            <div class="mt-3 font-bold text-green-700">Ksh {{ $product->price }}</div>
-            <button class="mt-4 w-full bg-green-700 text-white py-2 rounded hover:bg-green-800">
-                Edit
-            </button>
+    <div class="row" id="product-list">
+        <!-- Example product card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ asset('images/dairyhigh.jpeg') }}" class="h-48 w-full object-cover">
+                <div class="card-body">
+                    <h5 class="card-title">Dairy Meal</h5>
+                    <p class="card-text">High‑quality feed specially formulated for dairy cows.</p>
+                    <h6 class="text-success fw-bold mb-3">Ksh 2,500</h6>
+                    <form action="/cart/add" method="POST">
+                        <!-- @csrf in real Blade file -->
+                        <input type="hidden" name="product_id" value="1">
+                        <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    @endforeach
+
+        <!-- Duplicate for more products -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ asset('images/kienyeji.jpeg') }}" class="h-48 w-full object-cover">
+                <div class="card-body">
+                    <h5 class="card-title">Layers Mash</h5>
+                    <p class="card-text">Nutritious feed designed for improved egg production.</p>
+                    <h6 class="text-success fw-bold mb-3">Ksh 1,800</h6>
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="product_id" value="2">
+                        <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ asset('images/dairy.jpeg') }}" class="h-48 w-full object-cover">
+                <div class="card-body">
+                    <h5 class="card-title">Pig Grower</h5>
+                    <p class="card-text">Balanced nutrition feed for growing pigs.</p>
+                    <h6 class="text-success fw-bold mb-3">Ksh 2,200</h6>
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="product_id" value="3">
+                        <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
-@endsection
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,8 +1,26 @@
-@extends('pos.layout')
-
-@section('title','Goods Received')
+@extends('layouts.app')
 
 @section('content')
-<h1>POS - Goods Received</h1>
-<p>This page will track goods received from suppliers.</p>
+<div class="container">
+    <h3>Goods Received</h3>
+
+    <form method="POST" action="{{ route('pos.goods-received.store') }}">
+        @csrf
+
+        <select name="store_id" class="form-control mb-2">
+            @foreach($stores as $store)
+            <option value="{{ $store->id }}">{{ $store->name }}</option>
+            @endforeach
+        </select>
+
+        <select name="item_id" class="form-control mb-2">
+            @foreach($items as $item)
+            <option value="{{ $item->id }}">{{ $item->name }}</option>
+            @endforeach
+        </select>
+
+        <input type="number" name="qty" class="form-control mb-2" placeholder="Quantity">
+        <button class="btn btn-primary">Save</button>
+    </form>
+</div>
 @endsection

@@ -10,11 +10,14 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
+            $table->string('name')->nullable();
             $table->tinyInteger('rating')->default(5);
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->boolean('approved')->default(false);
             $table->timestamps();
+
+            $table->index(['product_id','approved']);
         });
     }
 

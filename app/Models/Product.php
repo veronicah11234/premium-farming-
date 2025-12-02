@@ -10,11 +10,18 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
-        'sku',
+        // 'image',
+        // 'sku',
         'name',
-        'description',
+        // 'description',
         'price',
         'quantity',
     ];
+
+public function category() { return $this->belongsTo(Category::class); }
+public function stockMovements() { return $this->hasMany(StockMovement::class); }
+public function saleItems() { return $this->hasMany(SaleItem::class); }
+
 }
+
+

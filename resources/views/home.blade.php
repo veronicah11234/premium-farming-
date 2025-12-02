@@ -1,11 +1,11 @@
-@extends('layouts.app')
+ @extends('layouts.app')
 
 @section('content')
 
 {{-- Include Top Navbar --}}
 @include('components.topnav')
 
-<div class="video-hero relative h-screen w-full overflow-hidden mt-20">
+{{-- <div class="video-hero relative h-screen w-full overflow-hidden mt-20">
 
     <!-- Video Slideshow -->
     <video class="active absolute top-0 left-0 w-full h-full object-cover opacity-70 transition-opacity" 
@@ -35,7 +35,7 @@
             Experience the Premium Farming Feeds difference today!
         </p>
     </div>
-</div>
+</div> --}}
 
 <script>
     const videos = document.querySelectorAll('.video-hero video');
@@ -52,4 +52,4 @@
     setInterval(showNextVideo, 7000);
 </script>
 
-@endsection
+@endsection 

@@ -1,73 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Dashboard' }}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ $title ?? config('app.name', 'POS System') }}</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: #f1f5f9;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 250px;
+        background: #1e293b;
+        color: #fff;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        padding-top: 20px;
+    }
+
+    /* Logo area */
+    .logo-box {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .logo-box img {
+        width: 130px;
+        object-fit: contain;
+        border-radius: 6px;
+    }
+
+    /* Sidebar menu */
+    .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .nav-item a {
+        color: #fff;
+        text-decoration: none;
+        flex: 1;
+        padding: 8px 10px;
+        border-radius: 5px;
+    }
+
+    .nav-item a:hover {
+        background: #334155;
+    }
+
+    .nav-item img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        margin-left: 10px;
+    }
+
+    .content {
+        margin-left: 250px;
+        padding: 25px;
+        min-height: 100vh;
+        width: calc(100% - 250px);
+    }
+</style>
 </head>
-<body class="bg-gray-100">
+<body>
 
-<div class="flex">
+<!-- Sidebar -->
+<div class="sidebar">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 h-screen bg-white shadow-md fixed left-0 top-0 overflow-y-auto">
+    <!-- Logo -->
+    <div class="logo-box">
+        <img src="{{ asset('images/logo.jpeg') }}" alt="Logo">
+        <h5 class="text-white mt-2 mb-0">Premium Farming Feeds</h5>
+        <small class="text-secondary">Quality • Nutrition • Growth</small>
+    </div>
 
-        <!-- LOGO AREA -->
-        <div class="p-6 border-b text-center bg-white">
-            <div class="flex flex-col items-center">
-                <div class="shadow-md border border-gray-300 bg-white p-1">
-                    <img src="{{ asset('images/logo.jpeg') }}" 
-                         alt="Logo"
-                         class="h-24 w-auto object-contain">
-                </div>
-                <h2 class="font-extrabold text-xl mt-3 text-green-700 tracking-wide">
-                    Premium Farming Feeds
-                </h2>
-                <p class="text-sm text-gray-500 mt-1 italic">
-                    Quality • Nutrition • Growth
-                </p>
-            </div>
-        </div>
+    <!-- Menu Navigation -->
+    <ul class="nav flex-column px-3 mt-3">
 
-        <!-- NAVIGATION -->
-        <nav class="mt-4 px-4">
-            {{-- Toggle Button --}}
-            @if ($mode === 'pos')
-                <a href="{{ route('shop.index') }}" 
-                   class="block p-2 mb-4 bg-green-600 text-white text-center rounded hover:bg-green-700 font-bold">
-                    Switch to Online Shop
-                </a>
-            @elseif ($mode === 'shop')
-                <a href="{{ route('dashboard') }}" 
-                   class="block p-2 mb-4 bg-blue-600 text-white text-center rounded hover:bg-blue-700 font-bold">
-                    Switch to POS Dashboard
-                </a>
-            @endif
+        <!-- Dashboard -->
+        <li class="nav-item">
+            <a href="{{ route('dashboard') }}">Dashboard</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
 
-            <ul class="space-y-2">
-                @if ($mode === 'pos')
-                    <li class="font-bold text-gray-600">POS</li>
-                    <li><a href="{{ route('pos.sell') }}" class="block p-2 hover:bg-gray-200 rounded">Pos</a></li>
-                    <li><a href="{{ route('pos.categories') }}" class="block p-2 hover:bg-gray-200 rounded">Categories</a></li>
-                    <li><a href="{{ route('pos.items') }}" class="block p-2 hover:bg-gray-200 rounded">Items</a></li>
-                    <li><a href="{{ route('pos.stores') }}" class="block p-2 hover:bg-gray-200 rounded">Stores</a></li>
-                    <li><a href="{{ route('pos.goods-received') }}" class="block p-2 hover:bg-gray-200 rounded">Goods Received</a></li>
-                    <li><a href="{{ route('pos.update-prices') }}" class="block p-2 hover:bg-gray-200 rounded">Update Prices</a></li>
-                @elseif ($mode === 'shop')
-                    <li class="font-bold text-gray-600">Online Shop</li>
-                    <li><a href="{{ route('shop.index') }}" class="block p-2 hover:bg-gray-200 rounded">Shop Home</a></li>
-                    <li><a href="{{ route('shop.products') }}" class="block p-2 hover:bg-gray-200 rounded">Manage Products</a></li>
-                @endif
-            </ul>
-        </nav>
-    </aside>
+        <!-- ONLINE SHOP SECTION -->
+        <li class="nav-item mt-2">
+            <strong class="text-uppercase text-secondary small">Online Shop</strong>
+        </li>
 
-    <!-- MAIN CONTENT -->
-    <main class="ml-64 w-full p-6">
-        @yield('content')
-    </main>
+        <li class="nav-item">
+            <a href="{{ route('shop.index') }}">Shop Home</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('shop.products') }}">Manage Products</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('shop.orders') }}">Orders</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('shop.customers') }}">Customers</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('shop.reports') }}">Reports</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+
+        <!-- POS SECTION -->
+        <li class="nav-item mt-3">
+            <strong class="text-uppercase text-secondary small">POS System</strong>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.sell') }}">POS Sell</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.categories') }}">Categories</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.items') }}">Items</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.stores') }}">Stores</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.goods-received') }}">Goods Received</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ route('pos.update-prices') }}">Update Prices</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <li class="nav-item">
+            <a href="/reports/sales">Sales Report</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+
+        <!-- Profile -->
+        <li class="nav-item mt-3">
+            <a href="/profile">Profile</a>
+            <img src="{{ asset('images/me.png') }}">
+        </li>
+
+        <!-- Logout -->
+        <li class="nav-item mt-3">
+            <a href="/logout" class="text-danger fw-bold">Logout</a>
+        </li>
+
+    </ul>
+
+</div>
+
+<!-- Page Content -->
+<div class="content">
+    @yield('content')
 </div>
 
 </body>

@@ -17,4 +17,10 @@ class ShopController extends Controller
     {
         return view('shop.show', compact('product'));
     }
+
+    public function order()
+{
+    return view('shop.order');
+}
+
 }

@@ -10,18 +10,18 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('image')->nullable(); // store image path
             $table->string('sku')->nullable()->unique();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
             $table->decimal('price', 12, 2)->default(0);
             $table->integer('quantity')->default(0);
+            $table->boolean('active')->default(true);
             $table->timestamps();
+
+            $table->index(['name']);
         });
-        Schema::table('products', function (Blueprint $table) {
-            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
-        });
-        
     }
 
     public function down()

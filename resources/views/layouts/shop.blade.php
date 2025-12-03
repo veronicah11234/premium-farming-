@@ -99,7 +99,7 @@
         <div class="px-4 py-4 border-b">
             <a href="{{ route('dashboard') }}"
                class="block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold">
-                ← Back to Dashboard
+                ← Dashboard
             </a>
 
             <a href="{{ route('shop.index') }}"

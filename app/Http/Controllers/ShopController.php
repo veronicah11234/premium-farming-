@@ -36,6 +36,18 @@ class ShopController extends Controller
     $orders = Order::with('customer')->latest()->get();
     return view('shop.orders', compact('orders'));
 }
+public function category($slug)
+{
+    $products = Product::where('category_slug', $slug)->get();
+
+    return view('shop.category', [
+        'title' => ucfirst($slug) . ' Feeds',
+        'products' => $products,
+        'slug' => $slug,
+    ]);
+}
+
+
 
     
     

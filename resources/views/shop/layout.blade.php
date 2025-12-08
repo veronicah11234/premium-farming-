@@ -10,6 +10,8 @@
     <a class="navbar-brand text-white" href="/shop">Shop</a>
     <a class="text-white ms-3" href="/shop/orders">Orders</a>
     <a class="text-white ms-3" href="/shop/customers">Customers</a>
+    <a class="text-white ms-3" href="/shop/categories">Categories</a>
+
     <a class="text-white ms-3" href="/shop/products">Products</a>
     <a class="text-white ms-3" href="/shop/reports">Reports</a>
 </nav>

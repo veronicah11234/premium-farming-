@@ -1,4 +1,4 @@
-@extends('layouts.shop')
+@extends('layouts')
 
 @section('content')
 <div class="container mt-4">

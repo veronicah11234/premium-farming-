@@ -278,38 +278,6 @@
     </div>
 </section>
 
-<!-- ========================= -->
-<!--   PRODUCT SECTION         -->
-<!-- ========================= -->
-{{-- <h2 class="text-3xl font-bold text-green-700 mb-6">Our Products</h2>
-
-<section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    @foreach($products as $product)
-    <div class="bg-white rounded shadow hover:shadow-lg transition p-4">
-        <img src="{{ asset($product->image ?? 'images/default.jpg') }}"
-             class="rounded-xl h-40 w-full object-cover">
-
-        <h3 class="font-bold text-lg mt-3">{{ $product->name }}</h3>
-
-        <p class="text-gray-600 mt-1 text-sm">
-            {{ Str::limit($product->description, 100) }}
-        </p>
-
-        <div class="mt-3 font-bold text-green-700">
-            KES {{ number_format($product->price, 2) }}
-        </div>
-
-        <form action="/cart/add" method="POST" class="mt-4">
-            @csrf
-            <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <button class="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800">
-                Add to Cart
-            </button>
-        </form>
-    </div>
-    @endforeach
-</section> --}}
-
 
 <!-- ========================= -->
 <!--   AUTO SLIDER SCRIPT      -->

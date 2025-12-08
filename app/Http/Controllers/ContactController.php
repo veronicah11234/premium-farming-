@@ -7,6 +7,22 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+
+    public function index()
+    {
+        return view('contact'); // make sure contact.blade.php exists
+    }
+
+    public function send(Request $request)
+    {
+        // Validate form
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'message' => 'required|string',
+        ]);
+    }
+
     public function create()
     {
         return view('contact.create');

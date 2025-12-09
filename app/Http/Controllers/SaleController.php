@@ -17,7 +17,6 @@ class SaleController extends Controller
     {
         // Create sale
         $sale = Sale::create([
-            'date' => now()->toDateString(),
             'total' => $request->total,
         ]);
 
@@ -32,7 +31,6 @@ class SaleController extends Controller
             ]);
         }
 
-        // ➤ Redirect to RECEIPT page
         return redirect()->route('sales.receipt', $sale->id);
     }
 
@@ -46,31 +44,26 @@ class SaleController extends Controller
         $month = $request->input('month', now()->format('Y-m'));
 
         // DAILY
-        $dailySales = Sale::whereDate('date', $date)->get();
+        $dailySales = Sale::whereDate('created_at', $date)->get();
         $dailyMoney = $dailySales->sum('total');
-        $dailyStock = SaleItem::whereHas('sale', fn($q) => $q->whereDate('date', $date))
-            ->sum('quantity');
 
-        $dailyProductSummary = SaleItem::selectRaw('product_name, SUM(quantity) as qty, SUM(subtotal) as money')
-            ->whereHas('sale', fn($q) => $q->whereDate('date', $date))
-            ->groupBy('product_name')
-            ->get();
+        $dailyStock = SaleItem::whereHas('sale', fn($q) =>
+            $q->whereDate('created_at', $date)
+        )->sum('quantity');
 
-        // MONTHLY
-        $monthlySales = Sale::where('date', 'LIKE', $month.'%')->get();
-        $monthlyMoney = $monthlySales->sum('total');
-        $monthlyStock = SaleItem::whereHas('sale', fn($q) => $q->where('date', 'LIKE', $month.'%'))
-            ->sum('quantity');
-
-        $monthlyProductSummary = SaleItem::selectRaw('product_name, SUM(quantity) as qty, SUM(subtotal) as money')
-            ->whereHas('sale', fn($q) => $q->where('date','LIKE',$month.'%'))
-            ->groupBy('product_name')
-            ->get();
+        // PRODUCT-WISE DAILY
+        $dailyProductSummary = SaleItem::selectRaw(
+            'product_name, SUM(quantity) as qty, SUM(subtotal) as money'
+        )
+        ->whereHas('sale', fn($q) =>
+            $q->whereDate('created_at', $date)
+        )
+        ->groupBy('product_name')
+        ->get();
 
         return view('reports.sales', compact(
-            'date','month',
-            'dailySales','dailyMoney','dailyStock','dailyProductSummary',
-            'monthlySales','monthlyMoney','monthlyStock','monthlyProductSummary'
+            'dailySales', 'dailyMoney', 'dailyStock',
+            'dailyProductSummary'
         ));
     }
 
@@ -83,8 +76,8 @@ class SaleController extends Controller
         $date = $request->date;
         $month = $request->month;
 
-        $dailySales = Sale::whereDate('date', $date)->get();
-        $monthlySales = Sale::where('date', 'LIKE', $month.'%')->get();
+        $dailySales = Sale::whereDate('created_at', $date)->get();
+        $monthlySales = Sale::where('created_at', 'LIKE', $month.'%')->get();
 
         $pdf = Pdf::loadView('reports.sales_pdf', compact(
             'date','month','dailySales','monthlySales'

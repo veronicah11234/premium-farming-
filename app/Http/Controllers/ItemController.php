@@ -40,6 +40,46 @@ class ItemController extends Controller
         return view('pos.stores', compact('items'));
     }
     
+     public function edit($id)
+    {
+        $item = Item::findOrFail($id);
+
+        return view('pos.edit_item', compact('item'));
+    }
+
+    // -------------------------
+    // Update item (items.update)
+    // -------------------------
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'sku'   => 'required',
+            'name'  => 'required',
+            'price' => 'required|numeric'
+        ]);
+
+        $item = Item::findOrFail($id);
+
+        $item->update([
+            'sku'   => $request->sku,
+            'name'  => $request->name,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->route('items.index')->with('success', 'Item updated successfully!');
+    }
+
+    // -------------------------
+    // Delete item (items.destroy)
+    // -------------------------
+    public function destroy($id)
+    {
+        $item = Item::findOrFail($id);
+        $item->delete();
+
+        return redirect()->route('items.index')->with('success', 'Item removed successfully!');
+    }
+
 
 
 }

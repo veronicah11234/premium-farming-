@@ -1,9 +1,104 @@
+@extends('layouts.shop')
+
+@section('title', 'Products')
+
+@section('content')
+
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, td, th, span, label, a {
+        color: #000 !important;
+    }
+
+    .cart-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #000 !important;
+    }
+
+    .table thead th {
+        background: #111 !important;
+        color: #fff !important;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .table-bordered {
+        border: 1px solid #d1d5db !important;
+    }
+
+    .table td, .table th {
+        vertical-align: middle !important;
+    }
+
+    .qty-input {
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+    }
+
+    .btn-update {
+        background: #065f46;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 6px;
+    }
+
+    .btn-update:hover {
+        background: #064e3b;
+        color: #fff;
+    }
+
+    .btn-remove {
+        background: #dc2626;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 6px;
+    }
+
+    .btn-remove:hover {
+        background: #b91c1c;
+        color: #fff;
+    }
+
+    .checkout-btn {
+        background: #facc15;
+        font-weight: 800;
+        font-size: 18px;
+        color: #000 !important;
+        padding: 12px 28px;
+        border-radius: 10px;
+        border: none;
+    }
+
+    .checkout-btn:hover {
+        background: #eab308;
+        color: #000 !important;
+    }
+
+    .empty-cart {
+        font-size: 18px;
+        font-weight: 600;
+        color: #6b7280 !important;
+        margin-top: 15px;
+    }
+
+    img.cart-img {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        object-fit: cover;
+    }
+</style>
+
 <div class="container mt-5">
-    <h2 class="mb-4 fw-bold text-primary">Your Cart</h2>
+
+    <h2 class="mb-4 cart-title">Your Cart</h2>
 
     @if(count($cart) > 0)
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-dark">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle shadow-sm">
+
+                <thead>
                 <tr>
                     <th>Image</th>
                     <th>Product</th>
@@ -12,56 +107,66 @@
                     <th>Total</th>
                     <th>Action</th>
                 </tr>
-            </thead>
+                </thead>
 
-            <tbody>
+                <tbody>
                 @foreach ($cart as $item)
                     <tr>
+
+                        <!-- Image -->
                         <td>
-                            <img src="{{ asset('images/'.$item['image']) }}" width="90" height="70" class="rounded">
+                            <img src="{{ asset('images/'.$item['image']) }}"
+                                 width="90" height="70"
+                                 class="cart-img">
                         </td>
 
-                        <td>{{ $item['name'] }}</td>
+                        <!-- Product Name -->
+                        <td class="fw-bold">{{ $item['name'] }}</td>
+
+                        <!-- Price -->
                         <td>KES {{ number_format($item['price']) }}</td>
 
-                        <!-- Editable Quantity -->
+                        <!-- Quantity -->
                         <td>
-                            <form action="{{ route('cart.update', $item['id']) }}" method="POST" class="d-flex">
+                            <form action="{{ route('cart.update', $item['id']) }}" method="POST" class="d-flex align-items-center">
                                 @csrf
-                                <input type="number" name="quantity" value="{{ $item['quantity'] }}"
-                                       class="form-control form-control-sm w-50">
-
-                                <button class="btn btn-success btn-sm ms-1">Update</button>
+                                <input type="number" name="quantity"
+                                       value="{{ $item['quantity'] }}"
+                                       class="form-control form-control-sm qty-input w-50 me-2">
+                                <button class="btn btn-update btn-sm">Update</button>
                             </form>
                         </td>
 
-                        <td>KES {{ number_format($item['price'] * $item['quantity']) }}</td>
+                        <!-- Total -->
+                        <td class="fw-bold">
+                            KES {{ number_format($item['price'] * $item['quantity']) }}
+                        </td>
 
-                        <!-- EDIT & REMOVE -->
-                        <td class="d-flex gap-2 flex-nowrap" style="min-width: 150px;">
-                            <button class="btn btn-danger btn-sm">Remove</button>
-
-                            
-                        
+                        <!-- Remove -->
+                        <td>
                             <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
                                 @csrf
-                                <button class="btn btn-danger btn-sm">Remove</button>
+                                <button class="btn btn-remove btn-sm w-100">Remove</button>
                             </form>
                         </td>
-                        
 
                     </tr>
                 @endforeach
-            </tbody>
-        </table>
+                </tbody>
 
-        <div class="text-end">
-            <a href="{{ route('checkout') }}" class="btn btn-lg btn-warning text-dark fw-bold">
+            </table>
+        </div>
+
+        <div class="text-end mt-3">
+            <a href="{{ route('checkout') }}" class="checkout-btn">
                 Proceed to Checkout →
             </a>
         </div>
 
     @else
-        <p class="text-muted">Your cart is empty.</p>
+        <p class="empty-cart">Your cart is empty.</p>
     @endif
+
 </div>
+
+@endsection

@@ -98,35 +98,35 @@
             <img src="{{ asset('images/me.png') }}">
         </li>
 
-        <!-- ONLINE SHOP SECTION -->
+        {{-- <!-- ONLINE SHOP SECTION -->
         <li class="nav-item mt-2">
             <strong class="text-uppercase text-secondary small">Online Shop</strong>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('shop.index') }}">Shop Home</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li> --}}
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('shop.products') }}">Manage Products</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li> --}}
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('shop.orders') }}">Orders</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li> --}}
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('shop.customers') }}">Customers</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li> --}}
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('shop.reports') }}">Reports</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li>  --}}
 
 
         <!-- POS SECTION -->

@@ -127,6 +127,15 @@ Route::prefix('pos')->name('pos.')->group(function () {
     Route::get('/petty-cash', [AccountController::class, 'pettyCash'])->name('petty-cash');
 });
 
+Route::prefix('pos')->group(function () {
+Route::get('/pos/items', [ItemController::class, 'index'])->name('pos.items');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+});
+Route::get('/pos/items', [ItemController::class, 'index'])->name('items.index');
+Route::post('/pos/items', [ItemController::class, 'store'])->name('items.store');
+Route::get('/pos/items/{id}/edit', [ItemController::class, 'edit'])->name('items.edit');
+Route::put('/pos/items/{id}', [ItemController::class, 'update'])->name('items.update');
+Route::delete('/pos/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
 
 
 /*
@@ -176,6 +185,9 @@ Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove
 
 Route::post('/cart/clear', [App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
 
+// Checkout Page
+Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])
+    ->name('checkout');
 
 
 

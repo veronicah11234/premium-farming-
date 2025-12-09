@@ -15,6 +15,22 @@
             background: #f1f5f9;
         }
 
+        .logo-flat {
+    width: 110px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    opacity: 0.95;
+    transition: 0.2s;
+}
+
+.logo-flat:hover {
+    opacity: 1;
+    transform: scale(1.04);
+}
+
+
         .sidebar {
             width: 250px;
             background: #1e293b;
@@ -33,6 +49,7 @@
             min-height: 100vh;
             width: calc(100% - 250px);
         }
+
     </style>
 </head>
 
@@ -47,7 +64,9 @@
 
         <!-- LOGO -->
         <div class="logo-box text-center p-4 border-b">
-            {{-- <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="w-28 mx-auto rounded"> --}}
+        <img src="{{ asset('images/logo.jpeg') }}" 
+            alt="Logo" 
+            class="logo-flat">
             <h5 class="text-green-700 mt-2 font-bold">Premium Farming Feeds</h5>
             <small class="text-gray-600">Quality • Nutrition • Growth</small>
         </div>
@@ -122,7 +141,7 @@
 
             <!-- CART -->
             <a href="{{ route('cart.index') }}"
-               class="mt-2 block text-center bg-black text-white py-2 rounded-lg hover:bg-gray-900 font-semibold flex items-center justify-center space-x-2">
+               class="mt-2 block text-center bg-black text-black py-2 rounded-lg hover:bg-gray-900 font-semibold flex items-center justify-center space-x-2">
                 <span>🛒 Cart</span>
 
                 @if(session('cart') && count(session('cart')) > 0)

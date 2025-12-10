@@ -16,20 +16,19 @@
         }
 
         .logo-flat {
-    width: 110px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border-radius: 8px;
-    opacity: 0.95;
-    transition: 0.2s;
-}
+            width: 110px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            opacity: 0.95;
+            transition: 0.2s;
+        }
 
-.logo-flat:hover {
-    opacity: 1;
-    transform: scale(1.04);
-}
-
+        .logo-flat:hover {
+            opacity: 1;
+            transform: scale(1.04);
+        }
 
         .sidebar {
             width: 250px;
@@ -49,7 +48,6 @@
             min-height: 100vh;
             width: calc(100% - 250px);
         }
-
     </style>
 </head>
 
@@ -64,9 +62,9 @@
 
         <!-- LOGO -->
         <div class="logo-box text-center p-4 border-b">
-        <img src="{{ asset('images/logo.jpeg') }}" 
-            alt="Logo" 
-            class="logo-flat">
+            <img src="{{ asset('images/logo.jpeg') }}" 
+                alt="Logo" 
+                class="logo-flat">
             <h5 class="text-green-700 mt-2 font-bold">Premium Farming Feeds</h5>
             <small class="text-gray-600">Quality • Nutrition • Growth</small>
         </div>
@@ -92,48 +90,64 @@
             <!-- CATEGORY DROPDOWN -->
             <div class="mt-4">
 
-                <button onclick="toggleCategories()"
-                    class="w-full bg-green-700 text-white py-3 px-4 rounded-lg font-bold mb-3">
+               <button onclick="toggleCategories()"
+                    class="w-full bg-green-700 text-black py-3 px-4 rounded-lg font-bold mb-3 flex items-center justify-center gap-2">
+
                     Categories
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                        class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 9l-7 7-7-7" />
+                    </svg>
                 </button>
 
+
                 <ul id="categoryList" class="hidden pl-3 space-y-3">
-
-                    {{-- <li>
-                        <a href="{{ route('category.index', 'poultry') }}"
-                           class="text-gray-800 font-semibold hover:text-green-700">
-                            Poultry Feeds
+                    <li>
+                        <a href="/category/poultry"
+                        class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                            🐔 Poultry Feeds
                         </a>
-                    </li> --}}
-                    
+                    </li><br>
 
-                    {{-- <li>
-                        <a href="{{ route('shop.category', 'dairy') }}"
-                           class="text-gray-800 font-semibold hover:text-green-700">
-                            Dairy Feeds
+                    <li>
+                        <a href="/category/dairy"
+                        class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                            🐄 Dairy Feeds
+                        </a>
+                    </li><br>
+
+                    <li>
+                        <a href="/category/swine"
+                        class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                            🐖 Swine Feeds
+                        </a>
+                    </li><br>
+
+                    <li>
+                        <a href="/category/pet-feeds"
+                        class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                            🐕 Pet Feeds
+                        </a>
+                    </li><br>
+
+                    <li>
+                        <li>
+                            <a href="/category/by-products"
+                                class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                                🌾 By-Products
+                            </a>
+                        </li><br>
+
+                    <li>
+                        <a href="/category/goat-feeds"
+                        class="flex items-center gap-2 text-gray-800 font-semibold hover:text-green-700">
+                            🐐 Goat Feeds
                         </a>
                     </li>
 
-                    <li>
-                        <a href="{{ route('shop.category', 'swine') }}"
-                           class="text-gray-800 font-semibold hover:text-green-700">
-                            Swine Feeds
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('shop.category', 'by-products') }}"
-                           class="text-gray-800 font-semibold hover:text-green-700">
-                            By-products
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('shop.category', 'pets') }}"
-                           class="text-gray-800 font-semibold hover:text-green-700">
-                            Pet Feeds
-                        </a>
-                    </li> --}}
 
                 </ul>
 

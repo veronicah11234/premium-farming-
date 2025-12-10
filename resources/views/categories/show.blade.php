@@ -8,26 +8,22 @@
     <p class="text-gray-700 mb-6">{{ $category->description }}</p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @foreach($feeds as $feed)
-            <div class="p-5 border rounded-lg shadow hover:shadow-lg transition">
-                
-                <img src="{{ $feed->image }}" 
-                     alt="{{ $feed->name }}" 
-                     class="w-full h-40 object-cover rounded">
+          @foreach ($items as $item)
+        <div class="border rounded shadow p-4">
+            <img src="{{ asset('storage/' . $item->image) }}"
+                 class="w-full h-40 object-cover rounded">
 
-                <h2 class="text-xl font-semibold mt-4">{{ $feed->name }}</h2>
+            <h3 class="text-xl font-semibold mt-3">{{ $item->name }}</h3>
 
-                <p class="text-gray-600 mt-2">{{ $feed->description }}</p>
+            <p class="text-gray-600">{{ $item->description }}</p>
 
-                <p class="text-green-700 font-bold mt-3">
-                    Ksh {{ number_format($feed->price) }}
-                </p>
+            <p class="font-bold text-green-700 mt-2">Ksh {{ number_format($item->price,2) }}</p>
 
-                <button class="mt-4 w-full bg-green-700 text-white px-4 py-2 rounded">
-                    Add to Cart
-                </button>
-            </div>
-        @endforeach
+            <button class="mt-3 bg-blue-600 text-white px-3 py-1 rounded">
+                Add to Cart
+            </button>
+        </div>
+    @endforeach
     </div>
 
 </div>

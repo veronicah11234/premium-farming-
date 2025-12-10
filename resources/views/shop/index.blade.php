@@ -217,7 +217,7 @@
             <!-- Video 2 -->
             <video autoplay loop muted playsinline
                    class="rounded-2xl shadow-lg h-72 w-96 object-cover flex-shrink-0 hover:scale-105 transition-transform duration-500">
-                <source src="{{ asset('images/chicken eating.mov') }}">
+                <source src="{{ asset('images/ikinu prem1.mp4') }}">
             </video>
 
             <!-- Video 3 -->
@@ -256,7 +256,7 @@
 
             <!-- Boss -->
             <div class="slider-card">
-                <img src="{{ asset('images/counter.jpg') }}" class="slider-image">
+                <img src="{{ asset('images/ikinu prem.jpeg') }}" class="slider-image">
             </div>
 
             <!-- Boss second photo -->

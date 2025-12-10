@@ -109,7 +109,7 @@
 
             <!-- Video 2 -->
             <div class="w-full flex-shrink-0 relative">
-                <video src="{{ asset('videos/pig eating.mov') }}" 
+                <video src="{{ asset('videos/ikinu prem1.mp4') }}" 
                        autoplay muted loop class="w-full h-80 object-cover rounded-xl"></video>
 
                 <div class="absolute bottom-4 left-4 bg-black/60 text-blue p-3 rounded-lg backdrop-blur">
@@ -138,7 +138,7 @@
 
             <!-- Video 3 -->
             <div class="w-full flex-shrink-0 relative">
-                <video src="{{ asset('videos/chicken eating.mov') }}"
+                <video src="{{ asset('videos/ikinu prem1.mp4') }}"
                        autoplay muted loop class="w-full h-80 object-cover rounded-xl"></video>
 
                 <div class="absolute bottom-4 left-4 bg-black/60 text-black p-3 rounded-lg backdrop-blur">

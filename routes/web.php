@@ -21,7 +21,6 @@ use App\Http\Controllers\PosReturnController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CategoryController;
 
-
 /*
 |--------------------------------------------------------------------------
 | HOME & DASHBOARD
@@ -61,7 +60,6 @@ Route::get('/logout', function () {
 });
 
 
-
 /*
 |--------------------------------------------------------------------------
 | POS ROUTES
@@ -70,54 +68,34 @@ Route::get('/logout', function () {
 
 Route::prefix('pos')->name('pos.')->group(function () {
 
-    // Dashboard
     Route::get('/', function () {
         return view('pos.layout');
     })->name('home');
     
-    // Sell
     Route::get('/sell', [POSController::class, 'sell'])->name('sell');
     Route::post('/sell', [POSController::class, 'storeSale'])->name('sell.store');
 
-    // Categories
     Route::get('/categories', [StockController::class, 'categories'])->name('categories');
-// 
-    // Items
+
     Route::get('/items', [ItemController::class, 'index'])->name('items');
     Route::post('/items/store', [ItemController::class, 'store'])->name('items.store');
 
-    // Stores
     Route::get('/stores', [StockController::class, 'stores'])->name('stores');
-
-    // Update prices
     Route::get('/update-prices', [StockController::class, 'updatePrices'])->name('update-prices');
 
-    // Goods received
     Route::get('/goods-received', [TransactionController::class, 'goodsReceived'])->name('goods-received');
     Route::post('/goods-received/store', [TransactionController::class, 'storeGoodsReceived'])->name('goods-received.store');
 
-    // Transfers
     Route::get('/transfers', [TransactionController::class, 'transfers'])->name('transfers');
     Route::post('/transfers/store', [TransactionController::class, 'storeTransfer'])->name('transfers.store');
 
-    // Stock take
     Route::get('/stock-take', [TransactionController::class, 'stockTake'])->name('stock-take');
     Route::post('/stock-take/store', [TransactionController::class, 'storeStockTake'])->name('stock-take.store');
 
-    /*
-    |--------------------------------------------------------------------------
-    | POS Reports
-    |--------------------------------------------------------------------------
-    */
     Route::get('/reports/best-seller', [ReportController::class, 'bestSeller'])->name('reports.best-seller');
     Route::get('/reports/goods-received', [ReportController::class, 'goodsReceivedReport'])->name('reports.goods-received');
     Route::get('/reports/stock-level', [ReportController::class, 'stockLevel'])->name('reports.stock-level');
 
-    /*
-    |--------------------------------------------------------------------------
-    | POS Accounts (Clients, Invoices, Receipts etc)
-    |--------------------------------------------------------------------------
-    */
     Route::get('/clients', [AccountController::class, 'clients'])->name('clients');
     Route::get('/client-terms', [AccountController::class, 'clientTerms'])->name('client-terms');
 
@@ -127,15 +105,31 @@ Route::prefix('pos')->name('pos.')->group(function () {
     Route::get('/petty-cash', [AccountController::class, 'pettyCash'])->name('petty-cash');
 });
 
-Route::prefix('pos')->group(function () {
-Route::get('/pos/items', [ItemController::class, 'index'])->name('pos.items');
-    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-});
+/*
+|--------------------------------------------------------------------------
+| POS Items CRUD
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/pos/items', [ItemController::class, 'index'])->name('items.index');
 Route::post('/pos/items', [ItemController::class, 'store'])->name('items.store');
 Route::get('/pos/items/{id}/edit', [ItemController::class, 'edit'])->name('items.edit');
 Route::put('/pos/items/{id}', [ItemController::class, 'update'])->name('items.update');
 Route::delete('/pos/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+
+/*
+|--------------------------------------------------------------------------
+| CATEGORY BLADE ROUTES (NEW)
+|--------------------------------------------------------------------------
+*/
+
+Route::view('/category/poultry', 'categories.poultry')->name('category.poultry');
+Route::view('/category/dairy', 'categories.dairy')->name('category.dairy');
+Route::view('/category/swine', 'categories.swine')->name('category.swine');
+Route::view('/category/pet-feeds', 'categories.pet-feeds')->name('category.pet-feeds');
+Route::view('/category/by-products', 'categories.by-products')->name('category.by-products');
+Route::view('/category/goat-feeds', 'categories.goat-feeds')->name('category.goat-feeds');
 
 
 /*
@@ -146,55 +140,41 @@ Route::delete('/pos/items/{id}', [ItemController::class, 'destroy'])->name('item
 
 Route::prefix('shop')->name('shop.')->group(function () {
 
-    // main shop page
     Route::get('/', [ShopController::class, 'index'])->name('index');
 
-    // other shop pages
     Route::get('/products', [ShopController::class, 'products'])->name('products');
     Route::get('/orders', [ShopController::class, 'orders'])->name('orders');
     Route::get('/customers', [ShopController::class, 'customers'])->name('customers');
+
     Route::get('/category', [CategoryController::class, 'index']);
-    Route::get('/category/{slug}', [CategoryController::class, 'show'])
-    ->name('shop.category');    
+    Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('shop.category');
 
     Route::view('/reports', 'shop.reports')->name('reports');
 
-    // single product page
     Route::get('/product/{id}', [ShopController::class, 'show'])->name('show');
-
 });
-
-
-
-// Cart routes
-// CART ROUTES
-Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-
-// Update quantity manually
-Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
-
-// Increase quantity
-Route::post('/cart/increment', [App\Http\Controllers\CartController::class, 'increment'])->name('cart.increment');
-
-// Decrease quantity
-Route::post('/cart/decrement', [App\Http\Controllers\CartController::class, 'decrement'])->name('cart.decrement');
-
-// Remove Item
-Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
-
-Route::post('/cart/clear', [App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
-
-// Checkout Page
-Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])
-    ->name('checkout');
-
-
 
 
 /*
 |--------------------------------------------------------------------------
-| OTHER SYSTEM ROUTES
+| CART ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/increment', [App\Http\Controllers\CartController::class, 'increment'])->name('cart.increment');
+Route::post('/cart/decrement', [App\Http\Controllers\CartController::class, 'decrement'])->name('cart.decrement');
+Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+
+Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
+
+
+/*
+|--------------------------------------------------------------------------
+| OTHER ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -212,26 +192,14 @@ Route::get('/my-profile', function () {
     return view('profile-page');
 })->name('my.profile');
 
-
-
-/*
-|--------------------------------------------------------------------------
-| RESOURCES (Invoices, Receipts, Credit Notes, Petty Cash)
-|--------------------------------------------------------------------------
-*/
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact');
-
 Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 Route::resource('invoices', InvoiceController::class);
 Route::resource('receipts', ReceiptController::class);
 Route::resource('credit-notes', CreditNoteController::class);
 Route::resource('petty-cash', PettyCashController::class);
-
-// POS Returns
 Route::resource('pos-returns', PosReturnController::class);
-
-
 
 require __DIR__.'/auth.php';

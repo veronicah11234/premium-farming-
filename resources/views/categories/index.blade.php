@@ -4,6 +4,13 @@
 <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold mb-6">Feed Categories</h1>
 
+    <select name="category" class="form-control">
+    @foreach ($categories as $cat)
+        <option value="{{ $cat->name }}">{{ $cat->name }}</option>
+    @endforeach
+</select>
+
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach($categories as $category)
             <a href="{{ url('/shop/categories/' . $category->slug) }}" 

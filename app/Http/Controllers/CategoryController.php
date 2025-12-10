@@ -22,7 +22,7 @@ public function show($slug)
     $category = Category::where('slug', $slug)->firstOrFail();
     $feeds = $category->feeds;
 
-    return view('shop.categories.show', compact('category', 'feeds'));
+    return view('shop.categories.show', compact('category', 'feeds','items'));
 }
 
 

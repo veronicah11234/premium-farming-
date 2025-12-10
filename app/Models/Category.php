@@ -26,4 +26,9 @@ public function feeds()
 {
 return $this->hasMany(Feed::class);
 }
+ public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+
 }

@@ -31,11 +31,16 @@ class ShopController extends Controller
         return view('shop.products', ['products' => $products, 'mode' => 'shop']);
     }
     
-    public function orders()
+public function orders()
 {
     $orders = Order::with('customer')->latest()->get();
-    return view('shop.orders', compact('orders'));
+    $customers = Customer::with('orders')->get();
+
+    return view('shop.orders', compact('orders', 'customers'));
 }
+
+
+
 public function category($slug)
 {
     $products = Product::where('category_slug', $slug)->get();

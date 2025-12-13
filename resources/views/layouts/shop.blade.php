@@ -92,8 +92,7 @@
 
                <button onclick="toggleCategories()"
                     class="w-full bg-green-700 text-black py-3 px-4 rounded-lg font-bold mb-3 flex items-center justify-center gap-2">
-
-                    Categories
+                    <i class="fa-solid fa-list">  Categories</i>
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -170,7 +169,7 @@
                 🧾 Orders
             </a>
 
-            <a href="{{ route('shop.customers') }}"
+            <a href="{{ route('customers.index') }}"
                class="block p-2 rounded hover:bg-green-100 text-gray-700 font-medium">
                 👥 Customers
             </a>

@@ -156,7 +156,7 @@
         @else
           <li><a href="{{ route('dashboard') }}" class="block p-2 rounded hover:bg-gray-50">Dashboard</a></li>
           <li><a href="{{ route('shop.index') }}" class="block p-2 rounded hover:bg-gray-50">Shop</a></li>
-          <li><a href="{{ route('pos.index') }}" class="block p-2 rounded hover:bg-gray-50">POS</a></li>
+          {{-- <li><a href="{{ route('pos.index') }}" class="block p-2 rounded hover:bg-gray-50">Shop</a></li> --}}
         @endif
       </ul>
     </nav>

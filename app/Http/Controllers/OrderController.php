@@ -10,10 +10,23 @@ use Carbon\Carbon;
 
 class OrderController extends Controller
 {
+
+  public function index()
+{
+    $orders = Order::with('customer')->latest()->get();
+    $customers = Customer::all();
+
+    return view('shop.orders', compact('orders', 'customers'));
+}
+
+
     public function create()
     {
         $products = Product::where('quantity', '>', 0)->get();
         return view('orders.create', compact('products'));
+
+         $customers = Customer::all();
+          return view('shop.orders.store', compact('customers'));
     }
 
     public function store(Request $request)
@@ -67,9 +80,5 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
     }
 
-    public function index()
-    {
-        $orders = Order::with('orderItems.product')->orderBy('created_at','desc')->paginate(15);
-        return view('orders.index', compact('orders'));
-    }
+    
 }

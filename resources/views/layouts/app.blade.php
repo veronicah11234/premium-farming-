@@ -144,10 +144,10 @@
             <img src="{{ asset('images/me.png') }}">
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('pos.items') }}">Items</a>
             <img src="{{ asset('images/me.png') }}">
-        </li>
+        </li> --}}
 
         <li class="nav-item">
             <a href="{{ route('pos.stores') }}">Stores</a>

@@ -20,6 +20,9 @@ use App\Http\Controllers\PettyCashController;
 use App\Http\Controllers\PosReturnController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +38,9 @@ Route::get('/dashboard', [POSController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +109,7 @@ Route::prefix('pos')->name('pos.')->group(function () {
     Route::get('/receipts', [AccountController::class, 'receipts'])->name('receipts');
     Route::get('/credit-notes', [AccountController::class, 'creditNotes'])->name('credit-notes');
     Route::get('/petty-cash', [AccountController::class, 'pettyCash'])->name('petty-cash');
+
 });
 
 /*
@@ -117,6 +124,12 @@ Route::get('/pos/items/{id}/edit', [ItemController::class, 'edit'])->name('items
 Route::put('/pos/items/{id}', [ItemController::class, 'update'])->name('items.update');
 Route::delete('/pos/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
 
+Route::prefix('shop')->group(function () {
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -131,6 +144,9 @@ Route::view('/category/pet-feeds', 'categories.pet-feeds')->name('category.pet-f
 Route::view('/category/by-products', 'categories.by-products')->name('category.by-products');
 Route::view('/category/goat-feeds', 'categories.goat-feeds')->name('category.goat-feeds');
 
+Route::get('/shop/orders/create', [OrderController::class, 'create'])->name('orders.create');
+Route::post('/shop/orders/store', [OrderController::class, 'store'])->name('orders.store');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -144,7 +160,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
 
     Route::get('/products', [ShopController::class, 'products'])->name('products');
     Route::get('/orders', [ShopController::class, 'orders'])->name('orders');
-    Route::get('/customers', [ShopController::class, 'customers'])->name('customers');
+    // Route::get('/customers', [ShopController::class, 'customers'])->name('customers');
 
     Route::get('/category', [CategoryController::class, 'index']);
     Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('shop.category');

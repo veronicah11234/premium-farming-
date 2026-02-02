@@ -30,21 +30,21 @@
 
 <!-- Flash Messages -->
 @if(session('success'))
-    <div class="container mt-4">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+<div class="container mt-4">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+</div>
 @endif
 
 @if(session('error'))
-    <div class="container mt-4">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+<div class="container mt-4">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+</div>
 @endif
 
 <!-- Products Section -->
@@ -52,64 +52,63 @@
     <h2 class="mb-4 text-center section-title">Our Products</h2>
 
     @if($products->isNotEmpty())
-        <div class="row">
-            @foreach($products as $product)
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm product-card">
+    <div class="row">
+        @foreach($products as $product)
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm product-card">
 
-                        <!-- Image -->
-                        <div class="card-img-top-container">
-                            <img
-                                class="card-img-top"
-                                src="{{ $product['image'] ?? asset('images/no-image.png') }}"
-                                alt="{{ $product['name'] }}">
-                        </div>
+                <!-- Image -->
+                <div class="card-img-top-container">
+                    <img
+                        class="card-img-top"
+                        src="{{ $product['image'] ?? asset('images/no-image.png') }}"
+                        alt="{{ $product['name'] }}">
+                </div>
 
-                        <!-- Body -->
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="fw-bold">{{ $product['name'] }}</h5>
+                <!-- Body -->
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold">{{ $product['name'] }}</h5>
 
-                            <p class="price-tag text-success fw-bold">
-                                KES {{ number_format($product['unit_price'], 2) }}
-                            </p>
+                    <p class="price-tag text-success fw-bold">
+                        KES {{ number_format($product['unit_price'], 2) }}
+                    </p>
 
-                            @if(!empty($product['sku']))
-                                <small class="text-muted mb-2">SKU: {{ $product['sku'] }}</small>
-                            @endif
+                    @if(!empty($product['sku']))
+                    <small class="text-muted mb-2">SKU: {{ $product['sku'] }}</small>
+                    @endif
 
-                            <div class="mt-auto">
-                                @if(request()->hasCookie('access_token'))
-                                    <!-- User is authenticated via cookie -->
-                                    <form method="POST" action="{{ route('cart.add') }}" class="add-to-cart-form">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
-                                        <input type="hidden" name="quantity" value="1">
+                    <div class="mt-auto">
+                        @if(request()->hasCookie('access_token'))
+                        <!-- User is authenticated via cookie -->
+                        <form method="POST" action="{{ route('cart.add') }}" class="add-to-cart-form">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                            <input type="hidden" name="quantity" value="1">
 
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
-                                        </button>
-                                    </form>
-                                @else
-                                    <!-- User is not authenticated -->
-                                    <button 
-                                        class="btn btn-outline-success w-100 login-prompt-btn"
-                                        data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] }}"
-                                    >
-                                        <i class="bi bi-cart-plus me-2"></i> Add to Cart
-                                    </button>
-                                @endif
-                            </div>
-                        </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                            </button>
+                        </form>
+                        @else
+                        <!-- User is not authenticated -->
+                        <button
+                            class="btn btn-outline-success w-100 login-prompt-btn"
+                            data-product-id="{{ $product['id'] }}"
+                            data-product-name="{{ $product['name'] }}">
+                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                        </button>
+                        @endif
                     </div>
                 </div>
-            @endforeach
+            </div>
         </div>
+        @endforeach
+    </div>
     @else
-        <div class="text-center py-5">
-            <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
-            <h4 class="text-muted">No products available</h4>
-        </div>
+    <div class="text-center py-5">
+        <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+        <h4 class="text-muted">No products available</h4>
+    </div>
     @endif
 </div>
 
@@ -127,7 +126,7 @@
                 <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
                 <h5 class="mb-3">Please log in to add items to your cart</h5>
                 <p class="text-muted mb-4" id="productMessage"></p>
-                
+
                 <div class="d-grid gap-2">
                     <a href="{{ route('login') }}" class="btn btn-success btn-lg">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Login
@@ -136,7 +135,7 @@
                         <i class="bi bi-person-plus me-2"></i> Create Account
                     </a>
                 </div>
-                
+
                 <p class="text-muted mt-3 mb-0 small">
                     Create an account to enjoy a seamless shopping experience
                 </p>
@@ -157,57 +156,57 @@
         margin-top: 76px;
     }
 
-.hero-video {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.45);
-}
+    .hero-video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.45);
+    }
 
-.hero-overlay {
-    position: relative;
-    z-index: 2;
-    padding: 90px 0;
-}
+    .hero-overlay {
+        position: relative;
+        z-index: 2;
+        padding: 90px 0;
+    }
 
-.hero-title {
-    font-size: 2.8rem;
-    font-weight: 800;
-}
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+    }
 
-.hero-subtitle {
-    font-size: 1.2rem;
-}
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
 
-.product-card {
-    border-radius: 15px;
-    transition: 0.3s ease;
-}
+    .product-card {
+        border-radius: 15px;
+        transition: 0.3s ease;
+    }
 
-.product-card:hover {
-    transform: translateY(-5px);
-}
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
 
-.card-img-top-container {
-    height: 200px;
-    overflow: hidden;
-}
+    .card-img-top-container {
+        height: 200px;
+        overflow: hidden;
+    }
 
-.card-img-top {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-.price-tag {
-    font-size: 1.2rem;
-}
+    .price-tag {
+        font-size: 1.2rem;
+    }
 
-.section-title {
-    font-weight: 700;
-    color: #2a6e3f;
-}
+    .section-title {
+        font-weight: 700;
+        color: #2a6e3f;
+    }
 
     .price-tag {
         font-size: 1.3rem;
@@ -285,7 +284,9 @@
     }
 
     @keyframes spinner {
-        to {transform: rotate(360deg);}
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     /* Responsive */
@@ -332,40 +333,40 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle login prompt buttons
-    const loginPromptButtons = document.querySelectorAll('.login-prompt-btn');
-    const authModal = new bootstrap.Modal(document.getElementById('authModal'));
-    const productMessage = document.getElementById('productMessage');
-    
-    loginPromptButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const productName = this.getAttribute('data-product-name');
-            productMessage.textContent = `You're trying to add "${productName}" to your cart.`;
-            authModal.show();
-        });
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle login prompt buttons
+        const loginPromptButtons = document.querySelectorAll('.login-prompt-btn');
+        const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+        const productMessage = document.getElementById('productMessage');
 
-    // Handle add to cart forms with loading state
-    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-    
-    addToCartForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const button = this.querySelector('button[type="submit"]');
-            button.disabled = true;
-            this.classList.add('loading');
+        loginPromptButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productName = this.getAttribute('data-product-name');
+                productMessage.textContent = `You're trying to add "${productName}" to your cart.`;
+                authModal.show();
+            });
         });
-    });
 
-    // Auto-dismiss alerts after 5 seconds
-    setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+        // Handle add to cart forms with loading state
+        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+
+        addToCartForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const button = this.querySelector('button[type="submit"]');
+                button.disabled = true;
+                this.classList.add('loading');
+            });
         });
-    }, 5000);
-});
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
 </script>
 
 @endsection

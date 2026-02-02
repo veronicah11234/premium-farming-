@@ -48,19 +48,9 @@ Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.
 
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/cart/count', [CartController::class, 'count']);
 
-/*
-|--------------------------------------------------------------------------
-| AUTH (PUBLIC)
-|--------------------------------------------------------------------------
-*/
-// Route::get('/login', [AuthenticatedSessionController::class, 'showLogin'])->name('login');
-// Route::post('/login', [AuthenticatedSessionController::class, 'login'])->name('auth.login');
 
-// Route::get('/register', fn () => view('auth.register'))->name('register');
-// Route::post('/register', [AuthenticatedSessionController::class, 'register'])->name('auth.register');
-
-// Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
@@ -76,67 +66,8 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-  Route::get('/orders', function () {
-            return view('pos.orders');
-        })->name('orders');
-        Route::get('/reports', function () {
-            return view('pos.reports');
-        })->name('reports');
-        Route::get('/customers', function () {
-            return view('pos.customers');
-        })->name('customers');
-        Route::get('/inventory', function () {
-            return view('pos.inventory');
-        })->name('inventory');
-        Route::get('/settings', function () {
-            return view('pos.settings');
-        })->name('settings');
-        
-        // Additional POS Routes
-        Route::get('/stores', [StockController::class, 'stores'])->name('stores');
-        Route::get('/update-prices', [StockController::class, 'updatePrices'])->name('update-prices');
-        Route::get('/stock-take', [TransactionController::class, 'stockTake'])->name('stock-take');
-        Route::post('/stock-take/store', [TransactionController::class, 'storeStockTake'])->name('stock-take.store');
-        Route::get('/reports/goods-received', [ReportController::class, 'goodsReceivedReport'])->name('reports.goods-received');
-        Route::get('/reports/stock-level', [ReportController::class, 'stockLevel'])->name('reports.stock-level');
-        Route::get('/clients', [AccountController::class, 'clients'])->name('clients');
-        Route::get('/client-terms', [AccountController::class, 'clientTerms'])->name('client-terms');
-        Route::get('/invoices', [AccountController::class, 'invoices'])->name('invoices');
-        Route::get('/receipts', [AccountController::class, 'receipts'])->name('receipts');
-        Route::get('/credit-notes', [AccountController::class, 'creditNotes'])->name('credit-notes');
-        Route::get('/petty-cash', [AccountController::class, 'pettyCash'])->name('petty-cash');
-        Route::get('/conversion', [ConversionController::class, 'index'])->name('conversion');
-        Route::post('/conversion', [ConversionController::class, 'store'])->name('convert.store');
-        Route::get('/held-sales', [CartController::class, 'heldSales'])->name('held.sales');
-        Route::get('/receipt', function () {
-            return view('pos.receipt');
-        })->name('receipt');
+ 
 
-        Route::middleware('auth')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Products
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    
-    // Cart (if you have it)
-    Route::get('/cart', function () {
-        return view('cart.index');
-    })->name('cart.view');
-    
-    // POS System (if you have it)
-    Route::get('/pos/sell', function () {
-        return view('pos.sell');
-    })->name('pos.sell');
-    
-    // Logout
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-});
-/*
-|--------------------------------------------------------------------------
-| SHOP & PRODUCTS (PUBLIC)
-|--------------------------------------------------------------------------
-*/
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
@@ -207,11 +138,19 @@ Route::view('/category/goat-feeds', 'categories.goat-feeds')->name('category.goa
 | CART (COOKIE AUTH)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth.cookie')->prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'view'])->name('view');
-    Route::post('/add', [CartController::class, 'add'])->name('add');
-    Route::patch('/update/{itemId}', [CartController::class, 'update'])->name('update');
-    Route::delete('/remove/{itemId}', [CartController::class, 'remove'])->name('remove');
+    Route::middleware(['auth'])->group(function () {
+    // Cart page view
+    Route::get('/cart/view', [CartController::class, 'view'])->name('cart.view');
+    
+    // Cart JSON API
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    
+    // Cart operations
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/increment', [CartController::class, 'increment']);
+    Route::post('/cart/decrement', [CartController::class, 'decrement']);
+    Route::post('/cart/remove', [CartController::class, 'remove']);
+    Route::post('/cart/clear', [CartController::class, 'clear']);
 });
 
  Route::prefix('products')->name('products.')->group(function () {

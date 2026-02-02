@@ -103,11 +103,18 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
-    .btn-quantity:hover {
+    .btn-quantity:hover:not(:disabled) {
         background: #f8f9fa;
         border-color: #2d6e4f;
+    }
+
+    .btn-quantity:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     .btn-remove {
@@ -115,10 +122,13 @@
         background: none;
         border: none;
         padding: 0.5rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
     .btn-remove:hover {
         color: #bd2130;
+        transform: scale(1.1);
     }
 
     .empty-cart {
@@ -130,9 +140,28 @@
         font-size: 5rem;
         color: #dee2e6;
     }
+
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
 </style>
 
+@endsection
+
+@push('scripts')
 <script>
+(function() {
+    'use strict';
+    
     // Cart state
     let cartData = null;
 
@@ -141,30 +170,52 @@
         loadCart();
     });
 
-    // Load cart from API
+    // Load cart from Laravel backend (which fetches from Django)
     async function loadCart() {
         try {
-            const response = await fetch('/api/cart', {
+            const response = await fetch('/cart', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
-                credentials: 'same-origin' // Include cookies
+                credentials: 'same-origin'
             });
 
-            if (response.ok) {
-                cartData = await response.json();
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Response is not JSON. Status:', response.status);
+                
+                // Session expired or not authenticated
+                if (response.status === 401 || response.status === 302 || response.redirected) {
+                    console.log('Authentication required. Redirecting to login...');
+                    window.location.href = '{{ route("login") }}?redirect=' + encodeURIComponent(window.location.pathname);
+                    return;
+                }
+                
+                throw new Error('Invalid response format. Expected JSON but got: ' + contentType);
+            }
+
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                cartData = data;
                 renderCart();
-            } else if (response.status === 401) {
-                // Not authenticated
-                window.location.href = '{{ route("login") }}';
+            } else if (response.status === 401 || !data.authenticated) {
+                // Unauthenticated - redirect to login
+                console.log('Not authenticated. Redirecting to login...');
+                window.location.href = '{{ route("login") }}?redirect=' + encodeURIComponent(window.location.pathname);
             } else {
-                showError('Failed to load cart');
+                showError(data.message || 'Failed to load cart');
+                renderEmptyCart();
             }
         } catch (error) {
             console.error('Error loading cart:', error);
-            showError('Error loading cart');
+            showError('Error loading cart. Please refresh the page.');
+            renderEmptyCart();
         }
     }
 
@@ -173,104 +224,160 @@
         const container = document.getElementById('cart-items-container');
         
         if (!cartData || !cartData.items || cartData.items.length === 0) {
-            container.innerHTML = `
-                <div class="empty-cart">
-                    <i class="bi bi-cart-x empty-cart-icon"></i>
-                    <h3 class="mt-4 mb-2">Your cart is empty</h3>
-                    <p class="text-muted mb-4">Add some products to get started!</p>
-                    <a href="{{ route('products') }}" class="btn btn-success">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Browse Products
-                    </a>
-                </div>
-            `;
-            updateSummary(0, 0);
+            renderEmptyCart();
             return;
         }
 
-        let html = '';
+        // Clear container
+        container.innerHTML = '';
+        
         let subtotal = 0;
 
-        cartData.items.forEach(item => {
+        // Create items
+        cartData.items.forEach(function(item) {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
 
-            html += `
-                <div class="cart-item" data-item-id="${item.id}">
-                    <div class="row align-items-center">
-                        <div class="col-md-2 mb-3 mb-md-0">
-                            <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.name}" class="cart-item-image">
-                        </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <h6 class="mb-1 fw-semibold">${item.name}</h6>
-                            <p class="text-muted small mb-0">${item.description || ''}</p>
-                        </div>
-                        <div class="col-md-2 mb-3 mb-md-0">
-                            <span class="fw-semibold">KES ${parseFloat(item.price).toFixed(2)}</span>
-                        </div>
-                        <div class="col-md-3 mb-3 mb-md-0">
-                            <div class="d-flex align-items-center gap-2">
-                                <button class="btn-quantity" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">
-                                    <i class="bi bi-dash"></i>
-                                </button>
-                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" 
-                                    onchange="updateQuantity(${item.id}, this.value)" readonly>
-                                <button class="btn-quantity" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-1 text-end">
-                            <button class="btn-remove" onclick="removeItem(${item.id})" title="Remove item">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+            const cartItemDiv = document.createElement('div');
+            cartItemDiv.className = 'cart-item';
+            cartItemDiv.setAttribute('data-item-id', item.id);
+            
+            cartItemDiv.innerHTML = 
+                '<div class="row align-items-center">' +
+                    '<div class="col-md-2 mb-3 mb-md-0">' +
+                        '<img src="' + (item.image || '{{ asset("images/no-image.png") }}') + '" ' +
+                             'alt="' + escapeHtml(item.name) + '" ' +
+                             'class="cart-item-image" ' +
+                             'onerror="this.src=\'{{ asset("images/no-image.png") }}\'">' +
+                    '</div>' +
+                    '<div class="col-md-4 mb-3 mb-md-0">' +
+                        '<h6 class="mb-1 fw-semibold">' + escapeHtml(item.name) + '</h6>' +
+                        '<p class="text-muted small mb-0">' + escapeHtml(item.description || '') + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-2 mb-3 mb-md-0">' +
+                        '<span class="fw-semibold">KES ' + parseFloat(item.price).toLocaleString() + '</span>' +
+                    '</div>' +
+                    '<div class="col-md-3 mb-3 mb-md-0">' +
+                        '<div class="d-flex align-items-center gap-2">' +
+                            '<button class="btn-quantity decrement-btn" data-id="' + item.id + '" ' + (item.quantity <= 1 ? 'disabled' : '') + '>' +
+                                '<i class="bi bi-dash"></i>' +
+                            '</button>' +
+                            '<input type="number" class="quantity-input" value="' + item.quantity + '" min="1" readonly>' +
+                            '<button class="btn-quantity increment-btn" data-id="' + item.id + '">' +
+                                '<i class="bi bi-plus"></i>' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="col-md-1 text-end">' +
+                        '<button class="btn-remove remove-item-btn" data-id="' + item.id + '" title="Remove item">' +
+                            '<i class="bi bi-trash"></i>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>';
+            
+            container.appendChild(cartItemDiv);
         });
 
-        container.innerHTML = html;
+        // Add event listeners
+        attachEventListeners();
+        
         updateSummary(subtotal, subtotal);
+    }
+
+    // Attach event listeners to dynamically created buttons
+    function attachEventListeners() {
+        // Increment buttons
+        document.querySelectorAll('.increment-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                updateQuantity(itemId, 'increment', this);
+            });
+        });
+
+        // Decrement buttons
+        document.querySelectorAll('.decrement-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                updateQuantity(itemId, 'decrement', this);
+            });
+        });
+
+        // Remove buttons
+        document.querySelectorAll('.remove-item-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-id');
+                removeItem(itemId);
+            });
+        });
+    }
+
+    // Render empty cart
+    function renderEmptyCart() {
+        const container = document.getElementById('cart-items-container');
+        container.innerHTML = 
+            '<div class="empty-cart">' +
+                '<i class="bi bi-cart-x empty-cart-icon"></i>' +
+                '<h3 class="mt-4 mb-2">Your cart is empty</h3>' +
+                '<p class="text-muted mb-4">Add some products to get started!</p>' +
+                '<a href="{{ route("products") }}" class="btn btn-success">' +
+                    '<i class="bi bi-arrow-left me-2"></i>' +
+                    'Browse Products' +
+                '</a>' +
+            '</div>';
+        updateSummary(0, 0);
     }
 
     // Update cart summary
     function updateSummary(subtotal, total) {
-        document.getElementById('cart-subtotal').textContent = `KES ${subtotal.toFixed(2)}`;
-        document.getElementById('cart-total').textContent = `KES ${total.toFixed(2)}`;
+        document.getElementById('cart-subtotal').textContent = 'KES ' + subtotal.toLocaleString();
+        document.getElementById('cart-total').textContent = 'KES ' + total.toLocaleString();
     }
 
     // Update item quantity
-    async function updateQuantity(itemId, newQuantity) {
-        if (newQuantity < 1) {
-            removeItem(itemId);
-            return;
-        }
-
+    async function updateQuantity(itemId, action, button) {
+        const endpoint = action === 'increment' ? '/cart/increment' : '/cart/decrement';
+        
+        // Show loading state
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+        button.disabled = true;
+        
         try {
-            const response = await fetch('/cart/update', {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 credentials: 'same-origin',
                 body: JSON.stringify({
-                    item_id: itemId,
-                    quantity: newQuantity
+                    id: itemId,
+                    index: 0
                 })
             });
 
-            if (response.ok) {
-                loadCart(); // Reload cart
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Reload entire cart to ensure consistency
+                await loadCart();
+                
+                // Update header cart count
+                updateCartCount();
+                
                 showSuccess('Cart updated');
             } else {
-                showError('Failed to update cart');
+                showError(data.message || 'Failed to update cart');
+                button.innerHTML = originalHTML;
+                button.disabled = false;
             }
         } catch (error) {
             console.error('Error updating cart:', error);
             showError('Error updating cart');
+            button.innerHTML = originalHTML;
+            button.disabled = false;
         }
     }
 
@@ -284,20 +391,28 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
                 credentials: 'same-origin',
                 body: JSON.stringify({
-                    item_id: itemId
+                    id: itemId,
+                    index: 0
                 })
             });
 
-            if (response.ok) {
-                loadCart(); // Reload cart
-                updateCartCount(); // Update header cart count
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Reload cart
+                await loadCart();
+                
+                // Update header cart count
+                updateCartCount();
+                
                 showSuccess('Item removed from cart');
             } else {
-                showError('Failed to remove item');
+                showError(data.message || 'Failed to remove item');
             }
         } catch (error) {
             console.error('Error removing item:', error);
@@ -307,28 +422,37 @@
 
     // Update cart count in header
     function updateCartCount() {
-        // This will call your existing cart count endpoint
         fetch('/cart/count', {
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json'
+            }
         })
-        .then(r => r.json())
-        .then(data => {
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
             const badge = document.querySelector('.cart-count-badge');
             if (badge) {
-                badge.textContent = data.count || 0;
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
             }
+        })
+        .catch(function(err) {
+            console.error('Error updating cart count:', err);
         });
     }
 
     // Show success message
     function showSuccess(message) {
-        // You can use Bootstrap toast or simple alert
         const toast = document.createElement('div');
         toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
         toast.style.zIndex = '9999';
-        toast.textContent = message;
+        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>' + escapeHtml(message);
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+        setTimeout(function() { toast.remove(); }, 3000);
     }
 
     // Show error message
@@ -336,19 +460,34 @@
         const toast = document.createElement('div');
         toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
         toast.style.zIndex = '9999';
-        toast.textContent = message;
+        toast.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>' + escapeHtml(message);
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+        setTimeout(function() { toast.remove(); }, 3000);
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
     // Checkout button
-    document.getElementById('checkout-btn').addEventListener('click', function() {
-        if (!cartData || !cartData.items || cartData.items.length === 0) {
-            alert('Your cart is empty');
-            return;
-        }
-        // Redirect to checkout page
-        window.location.href = '/checkout';
-    });
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            if (!cartData || !cartData.items || cartData.items.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+            window.location.href = '{{ route("checkout") }}';
+        });
+    }
+})();
 </script>
-@endsection
+@endpush

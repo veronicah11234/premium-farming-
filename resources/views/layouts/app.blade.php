@@ -734,8 +734,8 @@
                                 <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/dashboard">
-                                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                <li><a class="dropdown-item" href="/cart">
+                                    <i class="bi bi-speedometer2 me-2"></i>Cart
                                 </a></li>
                                 <li><a class="dropdown-item" href="{{ route('checkout.orders') }}">
                                     <i class="bi bi-bag-check me-2"></i>My Orders

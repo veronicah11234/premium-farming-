@@ -290,7 +290,6 @@
         `;
     }
 
-    /* ─── Render: Show Checkout Section ─── */
     function renderCheckout() {
         if (cart.items && cart.items.length > 0) {
             document.getElementById('checkoutSection').classList.remove('d-none');

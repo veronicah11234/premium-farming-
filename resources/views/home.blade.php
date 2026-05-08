@@ -409,15 +409,15 @@
             
             <div class="row g-4">
                 @foreach([
-                    ['name' => 'Poultry Feeds', 'route' => 'category.poultry', 'icon' => '🐔', 'desc' => 'Broiler, layers & kienyeji feeds for optimal growth'],
-                    ['name' => 'Dairy Feeds', 'route' => 'category.dairy', 'icon' => '🐄', 'desc' => 'Specialized feeds for higher milk production'],
-                    ['name' => 'Swine Feeds', 'route' => 'category.swine', 'icon' => '🐖', 'desc' => 'Complete nutrition for pigs at all growth stages'],
-                    ['name' => 'Pet Feeds', 'route' => 'category.pet-feeds', 'icon' => '🐶', 'desc' => 'Premium nutrition for dogs, cats & rabbits'],
-                    ['name' => 'By-products', 'route' => 'category.by-products', 'icon' => '🌾', 'desc' => 'Maize germ, wheat bran & supplements'],
-                    ['name' => 'Goat Feeds', 'route' => 'category.goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
+                    ['name' => 'Poultry Feeds', 'slug' => 'poultry', 'icon' => '🐔', 'desc' => 'Broiler, layers & kienyeji feeds for optimal growth'],
+                    ['name' => 'Dairy Feeds', 'slug' => 'dairy', 'icon' => '🐄', 'desc' => 'Specialized feeds for higher milk production'],
+                    ['name' => 'Swine Feeds', 'slug' => 'swine', 'icon' => '🐖', 'desc' => 'Complete nutrition for pigs at all growth stages'],
+                    ['name' => 'Pet Feeds', 'slug' => 'pet-feeds', 'icon' => '🐶', 'desc' => 'Premium nutrition for dogs, cats & rabbits'],
+                    ['name' => 'By-products', 'slug' => 'by-products', 'icon' => '🌾', 'desc' => 'Maize germ, wheat bran & supplements'],
+                    ['name' => 'Goat Feeds', 'slug' => 'goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
                 ] as $cat)
                 <div class="col-lg-4 col-md-6">
-                    <a href="{{ route($cat['route']) }}" class="text-decoration-none">
+                    <a href="{{ route('category.show', $cat['slug']) }}" class="text-decoration-none">
                         <div class="category-card animate-on-scroll">
                             <div class="category-icon mb-3">
                                 {{ $cat['icon'] }}

@@ -65,21 +65,21 @@ Route::get('/shop',           [ShopController::class, 'index'])->name('shop.inde
 Route::get('/shop/products',  [ShopController::class, 'products'])->name('shop.products');
 Route::get('/shop/product/{id}', [ShopController::class, 'show'])->name('shop.show');
 
-$categories = ['poultry','dairy','swine','pet-feeds','by-products','goat-feeds','pig','cattle','concentrates'];
-foreach ($categories as $cat) {
-    Route::view("/category/$cat", "categories.$cat")->name("category.$cat");
-}
+// $categories = ['poultry','dairy','swine','pet-feeds','by-products','goat-feeds','pig','cattle','concentrates'];
+// foreach ($categories as $cat) {
+//     Route::view("/category/$cat", "categories.$cat")->name("category.$cat");
+// }
 
-Route::get('/products/{category}', [ShopController::class, 'category'])
-    ->whereIn('category', ['pig', 'pet', 'poultry', 'byproduct'])
-    ->name('shop.category');
+// Route::get('/products/{category}', [ShopController::class, 'category'])
+//     ->whereIn('category', ['pig', 'pet', 'poultry', 'byproduct'])
+//     ->name('shop.category');
 
 Route::get('/products',          [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}',[ProductController::class, 'show'])->name('products.show');
 
 Route::get('/categories',            [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-
+Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('category.show');
 /*
 |--------------------------------------------------------------------------
 | CART

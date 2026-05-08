@@ -757,6 +757,44 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
                         </a>
+                        <ul class="dropdown-menu">
+
+                            {{-- All Products --}}
+                            <li>
+                                <a class="dropdown-item" href="{{ route('products') }}">
+                                    All Products
+                                </a>
+                            </li>
+
+                            {{-- Divider --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+
+                            {{-- Categories --}}
+                            @forelse($globalCategories ?? [] as $category)
+
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="{{ route('category.show', $category['slug']) }}"
+                                    >
+                                        {{ $category['name'] }}
+                                    </a>
+                                </li>
+
+                            @empty
+
+                                <li>
+                                    <span class="dropdown-item text-muted">
+                                        No categories available
+                                    </span>
+                                </li>
+
+                            @endforelse
+
+                        </ul>
                         
                     </li>
                     

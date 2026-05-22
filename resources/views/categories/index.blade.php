@@ -25,7 +25,7 @@
             @foreach ($categories as $category)
 
                 <option
-                    value="{{ url('/category/' . $category['slug']) }}"
+                    value="{{ url('/api/category/' . $category['slug']) }}"
                 >
                     {{ $category['name'] }}
                 </option>
@@ -43,7 +43,7 @@
         @foreach($categories as $category)
 
             <a
-                href="{{ url('/category/' . $category['slug']) }}"
+                href="{{ url('/api/category/' . $category['slug']) }}"
                 class="block p-5 border rounded-lg shadow hover:shadow-lg transition bg-white"
             >
 

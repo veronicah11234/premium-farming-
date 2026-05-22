@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
         $djangoUrl = config('services.django_api.url');
-        $endpoint  = $djangoUrl . '/public/products/';
+        $endpoint  = $djangoUrl . '/api/public/products/';
 
         try {
             $response = Http::withOptions([

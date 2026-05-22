@@ -96,13 +96,24 @@ Route::delete('/cart/remove', [CartController::class, 'remove']);
 | DJANGO CART PROXY
 |--------------------------------------------------------------------------
 */
-Route::prefix('proxy/cart')->group(function () {
-    Route::get('/',          [CartProxyController::class, 'load']);
-    Route::post('/add',      [CartProxyController::class, 'add']);
-    Route::patch('/update',  [CartProxyController::class, 'update']);
-    Route::delete('/remove', [CartProxyController::class, 'remove']);
-});
+// Route::prefix('proxy/cart')->group(function () {
+//     Route::get('/',          [CartProxyController::class, 'load']);
+//     Route::post('/add',      [CartProxyController::class, 'add']);
+//     Route::patch('/update',  [CartProxyController::class, 'update']);
+//     Route::delete('/remove', [CartProxyController::class, 'remove']);
+// });
 
+
+Route::prefix('proxy/cart')->group(function () {
+
+    Route::get('/', [CartProxyController::class, 'load']);
+
+    Route::post('/items', [CartProxyController::class, 'add']);
+
+    Route::patch('/items/update', [CartProxyController::class, 'update']);
+
+    Route::delete('/items/remove', [CartProxyController::class, 'remove']);
+});
 /*
 |--------------------------------------------------------------------------
 | DJANGO CHECKOUT PROXY
@@ -156,16 +167,16 @@ Route::prefix('checkout')->group(function () {
 Route::post('/api/ecommerce/place-order/', [OrderController::class, 'createOrder']);
 
 // Step 4: Order confirmation page
-Route::get('/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
+Route::get('/api/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
 
 // Step 5: Prepare WhatsApp message
 Route::post('/api/order/whatsapp', [OrderController::class, 'prepareWhatsApp'])->name('api.order.whatsapp');
 
 // Final confirmed page
-Route::get('/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
+Route::get('/api/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
 
 // CSRF token endpoint
-Route::get('/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
+Route::get('/api/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
 
 /*
 |--------------------------------------------------------------------------
@@ -190,7 +201,7 @@ Route::get('/api/ecommerce/pay/{orderId}', function ($orderId) {
 });
 
 // Blade payment page
-Route::get('/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+Route::get('/api/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
 
 // Blade JS: trigger STK push
 Route::post('/api/ecommerce/pay/', [PaymentController::class, 'initiatePayment'])->name('api.pay');
@@ -206,12 +217,31 @@ Route::post('/api/mpesa/callback', [PaymentController::class, 'paymentCallback']
 | WHATSAPP ROUTES (authenticated)
 |--------------------------------------------------------------------------
 */
+// Route::middleware(['web', 'auth'])->group(function () {
+//     Route::post('/whatsapp/redirect',     [WhatsAppRedirectController::class, 'redirectToWhatsApp'])->name('whatsapp.redirect');
+//     Route::post('/api/whatsapp/redirect', [WhatsAppRedirectController::class, 'apiRedirect'])->name('api.whatsapp.redirect');
+//     Route::get('/checkout/resume/{orderId}',  [CheckoutResumeController::class, 'resumeCheckout'])->name('checkout.resume');
+//     Route::post('/api/checkout/complete',     [CheckoutResumeController::class, 'completeCheckout'])->name('api.checkout.complete');
+//     Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])->name('api.webhook.update-delivery');
+// });
+
 Route::middleware(['web', 'auth'])->group(function () {
-    Route::post('/whatsapp/redirect',     [WhatsAppRedirectController::class, 'redirectToWhatsApp'])->name('whatsapp.redirect');
-    Route::post('/api/whatsapp/redirect', [WhatsAppRedirectController::class, 'apiRedirect'])->name('api.whatsapp.redirect');
-    Route::get('/checkout/resume/{orderId}',  [CheckoutResumeController::class, 'resumeCheckout'])->name('checkout.resume');
-    Route::post('/api/checkout/complete',     [CheckoutResumeController::class, 'completeCheckout'])->name('api.checkout.complete');
-    Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])->name('api.webhook.update-delivery');
+
+    Route::post(
+        '/api/whatsapp/prepare-order',
+        [WhatsAppOrderController::class, 'prepareWhatsAppOrder']
+    )->name('whatsapp.prepare');
+
+    Route::get(
+        '/checkout/resume/{orderRef}',
+        [WhatsAppOrderController::class, 'resumeCheckout']
+    )->name('checkout.resume');
+
+    Route::post(
+        '/api/checkout/complete-whatsapp',
+        [WhatsAppOrderController::class, 'completeCheckout']
+    )->name('checkout.complete.whatsapp');
+
 });
 
 Route::post('/api/whatsapp/prepare-order',      [WhatsAppOrderController::class, 'prepareWhatsAppOrder']);

@@ -41,7 +41,7 @@ class OrderController extends Controller
                 'ngrok-skip-browser-warning' => '1',
             ])->withOptions([
                 'verify' => false,
-            ])->get($this->djangoBase . '/api/ecommerce/csrf-token/');
+            ])->get($this->djangoBase . '/ecommerce/csrf-token/');
 
             if (!$response->successful()) {
                 Log::error('[OrderController] CSRF fetch failed', [

@@ -21,7 +21,7 @@ class CategoryComposer
 
             $response = Http::timeout(10)
                 ->acceptJson()
-                ->get($apiUrl . '/categories/');
+                ->get($apiUrl . '/api/categories/');
 
             if ($response->successful()) {
 

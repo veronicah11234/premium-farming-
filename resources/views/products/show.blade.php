@@ -6,7 +6,7 @@
         <div class="card-body">
             <p><strong>Name:</strong> {{ $product->name }}</p>
             <p><strong>Category:</strong> {{ ucfirst($product->category) }}</p>
-            <p><strong>Buying Price:</strong> KSh {{ number_format($product->buying_price, 2) }}</p>
+            <!-- <p><strong>Buying Price:</strong> KSh {{ number_format($product->buying_price, 2) }}</p> -->
             <p><strong>Selling Price:</strong> KSh {{ number_format($product->selling_price, 2) }}</p>
             <p><strong>Stock:</strong> {{ $product->stock }} {{ $product->unit }}</p>
             <p><strong>Description:</strong> {{ $product->description }}</p>

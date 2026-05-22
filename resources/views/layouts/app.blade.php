@@ -814,16 +814,29 @@
                         <a class="nav-link {{ request()->routeIs('orders') ? 'active' : '' }}" href="/orders">My Orders</a>
                     </li>
                     
-                    {{-- <li class="nav-item">
+
+                    <div class="text-center mt-5">
+
+                
+               
+
+            </div>
+                    <li class="nav-item">
                         <div class="navbar-cart-container">
-                            <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal" aria-label="Shopping Cart">
+                            <a
+                                href="{{ route('cart.view') }}"
+                                class="navbar-cart-btn"
+                                aria-label="Shopping Cart"
+                            >
                                 <i class="bi bi-cart3"></i>
+
                                 @if($cartCount > 0)
                                     <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
-                            </button>
+                            </a>
+
                         </div>
-                    </li> --}}
+                    </li> 
                 </ul>
             </div>
         </div>

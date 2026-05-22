@@ -148,8 +148,8 @@
    
     const API = {
         load:   '/proxy/cart',
-        update: '/proxy/cart/update',
-        remove: '/proxy/cart/remove',
+        update: '/proxy/cart/items/update',
+        remove: '/proxy/cart/items/remove',
     };
 
     let cart = { id: null, items: [], subtotal: 0, total_items: 0 };
